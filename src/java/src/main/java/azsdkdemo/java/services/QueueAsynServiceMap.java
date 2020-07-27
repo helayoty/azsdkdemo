@@ -29,15 +29,15 @@ public class QueueAsynServiceMap {
         System.out.println("Receiving Messages...");
          data.queueAsyncClient
              .receiveMessages(Integer.valueOf(dotEnv.get("AZURE_STORAGE_QUEUE_MSG_COUNT")))
-             .transformDeferred(QueueAsynServiceMap::getImage)
+             .transform(QueueAsynServiceMap::getImage)
              .doOnNext(System.out::println)
-             .transformDeferred(QueueAsynServiceMap::getFormPages)
+             .transform(QueueAsynServiceMap::getFormPages)
              .doOnNext(System.out::println)
              .filter(image -> StringUtils.isNotBlank(image.getText()))
              .doOnNext(System.out::println)
-             .transformDeferred(QueueAsynServiceMap::analyzeTextSentiment)
+             .transform(QueueAsynServiceMap::analyzeTextSentiment)
              .doOnNext(System.out::println)
-             .transformDeferred(QueueAsynServiceMap::writeToCosmos)
+             .transform(QueueAsynServiceMap::writeToCosmos)
              .subscribe(null, throwable -> System.out.println("Got error: " + throwable));
           //   .doOnNext(queueMessageItem -> data.queueAsyncClient.deleteMessage(queueMessageItem.getMessageId(), queueMessageItem.getPopReceipt()))
           //   .doOnNext(queueMessageItem -> System.out.println("Queue Message Deleted:"+ queueMessageItem.getMessageId()))
